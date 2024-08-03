@@ -1,0 +1,15 @@
+p, div {
+  /* font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+
+.footer {
+  display: flex;
+  grid-area: footer;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0px;
+  margin: 0px;
+}
+
