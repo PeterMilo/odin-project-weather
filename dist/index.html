@@ -7,13 +7,27 @@
 <script defer src="index.bundle.js"></script></head>
 
 <body>
-  
-  
-  <button id="test-button">Test</button>
 
-  <break></break>
 
-  <input id="search-field" type="text">
+  <div class="search-area">
+
+    <input id="search-field" type="text">
+    <break></break>
+    <button id="test-button">Get weather</button>
+
+  </div>
+
+  <div class="weather-display">
+
+    <h2 class="temperature"></h2>
+
+    <h2 class="weather-icon"></h2>
+
+  </div>
+
+  <div id="loading-spinner" class="spinner" style="display: none;"></div>
+
+
   
   <div class="footer">
     <p>© Self Service</p>

@@ -2,8 +2,13 @@ import './style.css';
 import '../node_modules/normalize.css';
 
 
+let weatherData
 const testButton = document.querySelector('#test-button');
 const searchField = document.querySelector('#search-field');
+const temperatureDisplay = document.querySelector('.temperature');
+const conditionsIconDisplay = document.querySelector('.weather-icon');
+const loadingSpinner = document.querySelector('#loading-spinner'); 
+
 
 
 function makeFetchRequest () {
@@ -23,7 +28,6 @@ function urlWithSearch() {
 
 function getSearchInput(){
     const location = searchField.value;
-    console.log(location);
     return location; 
 }
 
@@ -38,6 +42,54 @@ function temperatureInCelcius(farenheit){
     return celciusRounded;
 }
 
+function displayTemperature(){
+    const temperatureToDisplay = temperatureInCelcius(weatherData.localweather.temperature);
+    temperatureDisplay.textContent = temperatureToDisplay;
+    console.log(temperatureToDisplay);
+}
+
+function displayWeatherConditions() {
+    const conditionsToDisplay = weatherData.localweather.currentConditions;
+    let result
+    let iconToDisplay
+
+    switch(conditionsToDisplay){
+        case 'Partially cloudy': 
+            result = '🌤';
+            break;
+        case 'Overcast':
+            result = '☁';
+            break;
+        case 'Clear':
+            result = '☀';
+            break;
+        case 'Drizzle':
+            result = '🌧';
+            break;
+        default:
+            result = 'Unknown weather';
+    }
+
+    conditionsIconDisplay.textContent = result;
+
+}
+
+
+async function getSpecificWeatherData(){
+    const fetchObject = await makeFetchRequest();
+    const jsonObject = await fetchObject.json();
+    const weatherConditions = await jsonObject.currentConditions.conditions;
+    const weatherTemperature = await jsonObject.currentConditions.temp;
+
+    const myWeatherObject = await {localweather: {currentConditions:weatherConditions,temperature:weatherTemperature} 
+    }
+
+    weatherData = myWeatherObject;
+
+    console.log(myWeatherObject);
+    return myWeatherObject;
+}
+
 function weatherInLog(json){
     const conditions = json.currentConditions.conditions;
     const temperature = temperatureInCelcius(json.currentConditions.temp);
@@ -45,9 +97,18 @@ function weatherInLog(json){
 }
 
 testButton.addEventListener('click', ()=>{
+
+    loadingSpinner.style.display = 'block'; // Show the spinner
+
     makeFetchRequest()
         .then(parseToJson)
         .then(weatherInLog)
-        // .then(data => console.log(data))
-        
+        .then(getSpecificWeatherData)
+        .then(displayTemperature)
+        .then(displayWeatherConditions)
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+            loadingSpinner.style.display = 'none'; // Hide the spinner after everything is done
+        });
 });
+
